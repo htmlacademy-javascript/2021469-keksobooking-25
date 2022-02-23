@@ -3,39 +3,26 @@ function getRandomInt (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   if ((max < 0) || (min < 0)) {
-    // eslint-disable-next-line no-console
-    console.log('В диапозоне присутствуют отрицательные числа, это недопустимо');
-    return undefined;
-  } else if (max >= min ) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  } else {
-    return Math.floor(Math.random() * (min - max + 1)) + max;
+    throw RangeError('The argument must not be negative');
   }
+  const a = Math.random();
+  const result = (max >= min) ?
+    (a * (max - min + 1)) + min :
+    (a * (min - max + 1)) + max;
+  return Math.floor(result);
 }
 
 function getRandomFraction (min, max, rate) {
-  let result;
   if ((max < 0) || (min < 0)) {
-    // eslint-disable-next-line no-console
-    console.log('В диапозоне присутствуют отрицательные числа, это недопустимо');
-    return undefined;
-  } else if (max >= min ) {
-    result = +((Math.random() * (max - min + 0.1)) + min).toFixed(rate);
-    if (result >= max) {
-      return max;
-    } else {
-      return result;
-    }
-  } else {
-    result = +((Math.random() * (min - max + 0.1)) + max).toFixed(rate);
-    if (result >= min) {
-      return min;
-    } else {
-      return result;
-    }
+    throw RangeError('The argument must not be negative');
   }
+  const a = Math.random();
+  const result = (max >= min) ?
+    ((a * (max - min)) + min).toFixed(rate) :
+    ((a * (min - max)) + max).toFixed(rate);
+  return parseFloat(result);
 }
 
-getRandomInt();
-getRandomFraction();
+getRandomInt(5, 10);
+getRandomFraction(1.1, 1.2, 5);
 
