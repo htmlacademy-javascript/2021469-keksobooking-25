@@ -22,7 +22,24 @@ function getRandomFraction (min, max, rate) {
   return parseFloat(result);
 }
 
-const BUILDING_TYPE = [
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function getNonRepeatingNumber (array, min, max) {
+  const elem = getRandomInt(min, max);
+  if (array.includes(elem) === false) {
+    array.push(elem);
+    return elem;
+  } else {
+    return getNonRepeatingNumber(array, min, max);
+  }
+}
+
+const BUILDING_TYPES = [
   'palace',
   'flat',
   'house',
@@ -51,41 +68,16 @@ const CHECKIN_CHECKOUT_TIME = [
   '14:00'
 ];
 
-const exceptions = {
-  avatar: [],
-  features: [],
-  photos: [],
-};
-
-// eslint-disable-next-line no-shadow
-function getNonRepeatingNumber (array, elem, min, max) {
-  if (array.includes(elem) === false) {
-    array.push(elem);
-  } else {
-    while(array.includes(elem)) {
-      elem = getRandomInt(min, max);
-    }
-    array.push(elem);
-  }
-  return elem;
-}
+const avatarExceptions =[];
 
 const createElement = () => {
-  const avatarNumber =  getNonRepeatingNumber(exceptions.avatar, getRandomInt(0, 10), 0, 10);
+  const avatarNumber =  getNonRepeatingNumber(avatarExceptions, 0, 10);
 
-  const featuresArray = [];
-  for (let i = 0; i < getRandomInt(0, BUILDING_FEATURES.length -1); i++) {
-    const featureIndex = getNonRepeatingNumber(exceptions.features, getRandomInt(0, BUILDING_FEATURES.length -1), 0, BUILDING_FEATURES.length -1);
-    featuresArray.push(BUILDING_FEATURES[featureIndex]);
-  }
-  exceptions.features.length = 0;
+  shuffle(BUILDING_FEATURES);
+  const featuresArray = BUILDING_FEATURES.slice(0, getRandomInt(0, BUILDING_FEATURES.length-1));
 
-  const photosArray =[];
-  for(let i = 0; i < getRandomInt(0, BUILDING_PHOTOS.length -1); i++) {
-    const photoIndex = getNonRepeatingNumber(exceptions.photos, getRandomInt(0, BUILDING_PHOTOS.length -1), 0, BUILDING_PHOTOS.length -1);
-    photosArray.push(BUILDING_PHOTOS[photoIndex]);
-  }
-  exceptions.photos.length = 0;
+  shuffle(BUILDING_PHOTOS);
+  const photosArray = BUILDING_PHOTOS.slice(0, getRandomInt(0, BUILDING_PHOTOS.length-1));
 
   const lat = getRandomFraction(35.65000, 35.70000, 5);
   const lng = getRandomFraction(139.70000, 139.80000, 5);
@@ -100,7 +92,7 @@ const createElement = () => {
       title: 'Hello World!',
       address: `${lat}, ${lng}`,
       price: getRandomInt(0,  10000) ,
-      type: BUILDING_TYPE[getRandomInt(0, BUILDING_TYPE.length - 1)],
+      type: BUILDING_TYPES[getRandomInt(0, BUILDING_TYPES.length - 1)],
       rooms: getRandomInt(1, 10),
       guests: getRandomInt(1, 20),
       checkin: CHECKIN_CHECKOUT_TIME[getRandomInt(0, CHECKIN_CHECKOUT_TIME.length - 1)],
@@ -116,5 +108,4 @@ const createElement = () => {
   };
 };
 
-// eslint-disable-next-line no-unused-vars
-const array = Array.from({length: 10}, createElement);
+Array.from({length: 10}, createElement);
