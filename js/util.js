@@ -22,11 +22,13 @@ export function getRandomFraction (min, max, rate) {
   return parseFloat(result);
 }
 
-export function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
+export function shuffle(oldArray) {
+  const newArray = oldArray.slice();
+  for (let i = newArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
   }
+  return newArray;
 }
 
 export function getNonRepeatingNumber (array, min, max) {

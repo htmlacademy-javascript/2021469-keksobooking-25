@@ -33,13 +33,8 @@ const avatarExceptions =[];
 
 export const createElement = () => {
   const avatarNumber =  getNonRepeatingNumber(avatarExceptions, 0, 10);
-
-  shuffle(BUILDING_FEATURES);
-  const featuresArray = BUILDING_FEATURES.slice(0, getRandomInt(0, BUILDING_FEATURES.length-1));
-
-  shuffle(BUILDING_PHOTOS);
-  const photosArray = BUILDING_PHOTOS.slice(0, getRandomInt(0, BUILDING_PHOTOS.length-1));
-
+  const featuresArray = shuffle(BUILDING_FEATURES).slice(0, getRandomInt(0, BUILDING_FEATURES.length - 1));
+  const photosArray = shuffle(BUILDING_PHOTOS).slice(0, getRandomInt(0, BUILDING_PHOTOS.length - 1));
   const lat = getRandomFraction(35.65000, 35.70000, 5);
   const lng = getRandomFraction(139.70000, 139.80000, 5);
 
@@ -52,13 +47,13 @@ export const createElement = () => {
     offer: {
       title: 'Hello World!',
       address: `${lat}, ${lng}`,
-      price: getRandomInt(0,  10000) ,
+      price: getRandomInt(0, 10000) ,
       type: BUILDING_TYPES[getRandomInt(0, BUILDING_TYPES.length - 1)],
       rooms: getRandomInt(1, 10),
       guests: getRandomInt(1, 20),
       checkin: CHECKIN_CHECKOUT_TIME[getRandomInt(0, CHECKIN_CHECKOUT_TIME.length - 1)],
       checkout: CHECKIN_CHECKOUT_TIME[getRandomInt(0, CHECKIN_CHECKOUT_TIME.length - 1)],
-      features: featuresArray,
+      features: featuresArray.join(),
       description: 'Comfortable apartments only for you!',
       photos: photosArray,
     },
