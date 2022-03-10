@@ -1,2 +1,3 @@
-import {getRandomInt, getRandomFraction, shuffle, getNonRepeatingNumber} from './util.js';
-import {arrayOfAds} from './data.js';
+import {createElement} from './data.js';
+
+Array.from({length: 10}, createElement);

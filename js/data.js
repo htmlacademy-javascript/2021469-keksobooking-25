@@ -31,7 +31,7 @@ const CHECKIN_CHECKOUT_TIME = [
 
 const avatarExceptions =[];
 
-const createElement = () => {
+export const createElement = () => {
   const avatarNumber =  getNonRepeatingNumber(avatarExceptions, 0, 10);
 
   shuffle(BUILDING_FEATURES);
@@ -68,6 +68,3 @@ const createElement = () => {
     },
   };
 };
-
-export const arrayOfAds = Array.from({length: 10}, createElement);
-
