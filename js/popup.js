@@ -1,5 +1,3 @@
-import {createElement} from './data.js';
-
 function getBuildingInRusLang (buildType) {
   switch(buildType) {
     case 'flat': return 'Квартира';
@@ -20,9 +18,7 @@ function getRoomsInRusLang (number) {
   }
 }
 
-const newCard = createElement();
-
-export const getNewCard = function() {
+export const getNewCard = function(newCard) {
   const cardTemplate = document.querySelector('#card')
     .content
     .querySelector('.popup');
