@@ -53,7 +53,7 @@ export const createElement = () => {
       guests: getRandomInt(1, 20),
       checkin: CHECKIN_CHECKOUT_TIME[getRandomInt(0, CHECKIN_CHECKOUT_TIME.length - 1)],
       checkout: CHECKIN_CHECKOUT_TIME[getRandomInt(0, CHECKIN_CHECKOUT_TIME.length - 1)],
-      features: featuresArray.join(),
+      features: featuresArray,
       description: 'Comfortable apartments only for you!',
       photos: photosArray,
     },
