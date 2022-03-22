@@ -1,40 +1,42 @@
-function getBuildingInRusLang (buildType) {
-  switch(buildType) {
-    case 'flat': return 'Квартира';
-    case 'bungalow': return 'Бунгало';
-    case 'house': return 'Дом';
-    case 'palace': return 'Дворец';
-    default: return 'Отель';
-  }
+// import { createElement } from "./data";
+
+const buildingInRusLang = {
+  'flat': 'Квартира',
+  'bungalow': 'Бунгало',
+  'house': 'Дом',
+  'palace': 'Дворец',
+  'hotel': 'Отель',
+};
+
+function declOfNum (n,textForms) {
+  n = Math.abs(n) % 100;
+  const n1 = n % 10;
+  // if (n > 10 && n < 20) { return textForms[2]; }
+  if (n1 > 1 && n1 < 5) { return textForms[1]; }
+  if (n1 === 1) { return textForms[0]; }
+  return textForms[2];
 }
 
-function getRoomsInRusLang (number) {
-  switch(number) {
-    case 1: return 'комната для';
-    case 2:
-    case 3:
-    case 4: return 'комнаты для';
-    default: return 'комнат для';
-  }
-}
+const cardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.popup');
+const card = cardTemplate.cloneNode(true);
 
 export const getNewCard = function(newCard) {
-  const cardTemplate = document.querySelector('#card')
-    .content
-    .querySelector('.popup');
-  const card = cardTemplate.cloneNode(true);
   card.querySelector('.popup__title').textContent = newCard.offer.title;
   card.querySelector('.popup__text--address').textContent = newCard.offer.address;
   card.querySelector('.popup__text--price').textContent = `${newCard.offer.price} ₽/ночь`;
-  card.querySelector('.popup__type').textContent = getBuildingInRusLang(newCard.offer.type);
-  card.querySelector('.popup__text--capacity').textContent = `${newCard.offer.rooms} ${getRoomsInRusLang(newCard.offer.rooms)}
-  ${newCard.offer.guests} ${(newCard.offer.guests === 1)? 'гостя': 'гостей'}`;
+  card.querySelector('.popup__type').textContent = buildingInRusLang[newCard.offer.type];
+  card.querySelector('.popup__text--capacity').textContent = `${newCard.offer.rooms}
+    ${declOfNum(newCard.offer.rooms, ['комната для', 'комнаты для', 'комнат для'])}
+    ${newCard.offer.guests} ${(newCard.offer.guests === 1)? 'гостя': 'гостей'}`;
   card.querySelector('.popup__text--time').textContent = `Заезд после ${newCard.offer.checkin}, выезд до ${newCard.offer.checkout}`;
 
   const featuresContainer = card.querySelector('.popup__features');
   const  featuresListFragment = document.createDocumentFragment();
   newCard.offer.features.forEach((feature) => {
-    const necessaryFeature = featuresContainer.querySelector(`.popup__feature--${feature}`);
+    const necessaryFeature = document.createElement('li');
+    necessaryFeature.classList.add('popup__feature', `popup__feature--${feature}`);
     necessaryFeature.textContent = feature;
     featuresListFragment.append(necessaryFeature);
   });
