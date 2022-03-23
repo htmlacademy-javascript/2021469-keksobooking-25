@@ -6,12 +6,15 @@ const buildingInRusLang = {
   'hotel': 'Отель',
 };
 
-function declOfNum (n,textForms) {
-  n = Math.abs(n) % 100;
-  const n1 = n % 10;
-  if (n1 > 1 && n1 < 5) { return textForms[1]; }
-  if (n1 === 1) { return textForms[0]; }
-  return textForms[2];
+function declOfNum (number, textForms) {
+  number = Math.abs(number) % 1000;
+  if (number > 1 && number < 5) {
+    return textForms[1];
+  }
+  if (number === 1) {
+    return textForms[0];
+  }
+  return '';
 }
 
 const cardTemplate = document.querySelector('#card')
@@ -25,7 +28,7 @@ export const getNewCard = function(newCard) {
   card.querySelector('.popup__text--price').textContent = `${newCard.offer.price} ₽/ночь`;
   card.querySelector('.popup__type').textContent = buildingInRusLang[newCard.offer.type];
   card.querySelector('.popup__text--capacity').textContent = `${newCard.offer.rooms}
-    ${declOfNum(newCard.offer.rooms, ['комната для', 'комнаты для', 'комнат для'])}
+    комнат${declOfNum(newCard.offer.rooms, ['а', 'ы'])} для
     ${newCard.offer.guests} ${(newCard.offer.guests === 1)? 'гостя': 'гостей'}`;
   card.querySelector('.popup__text--time').textContent = `Заезд после ${newCard.offer.checkin}, выезд до ${newCard.offer.checkout}`;
 
