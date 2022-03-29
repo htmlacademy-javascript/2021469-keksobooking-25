@@ -1,4 +1,8 @@
 const form = document.querySelector('.ad-form');
+const roomsField = form.querySelector('[name="rooms"]');
+const guestsField = form.querySelector('[name="capacity"]');
+const priceField = form.querySelector('#price');
+const buildingTypeField = form.querySelector('[name="type"]');
 
 export function validateForm () {
   const pristine = new Pristine(form, {
@@ -10,45 +14,56 @@ export function validateForm () {
     errorTextClass: 'form__error'
   }, false);
 
-  function validateTitle (value) {
-    return value.length >= 30 && value.length <=100;
-  }
-
-  pristine.addValidator(
-    form.querySelector('#title'),
-    validateTitle,
-    'От 30 до 100 символов'
-  );
-
-  function validatePrice (value) {
-    return value.length && parseInt(value, 10) <= 100000;
-  }
-
-  pristine.addValidator(
-    form.querySelector('#price'),
-    validatePrice,
-    'Максимальное значение - 100 000'
-  );
-
-  const RoomsField = form.querySelector('[name="rooms"]');
-  const GuestsField = form.querySelector('[name="capacity"]');
-  const capacityOption = {
-    '1': ['1'],
-    '2': ['2', '1'],
-    '3': ['3', '2', '1'],
-    '100': ['0']
+  const priceOption = {
+    'bungalow': '0',
+    'flat': '1000',
+    'hotel': '3000',
+    'house': '5000',
+    'palace': '10000'
   };
 
+  function onBuildingTypeChange () {
+    priceField.placeholder = priceOption[buildingTypeField.value];
+    pristine.validate(priceField);
+  }
+
+  form
+    .querySelectorAll('[name="type"]')
+    .forEach((item) => item.addEventListener('change', onBuildingTypeChange));
+
+  function validatePrice (value) {
+    return parseInt(value, 10) > priceOption[buildingTypeField.value];
+  }
+
+  function getPriceErrorMessage () {
+    return `Внимание! Минимальная цена за ночь - ${priceOption[buildingTypeField.value]} руб.`;
+  }
+
+  pristine.addValidator(priceField, validatePrice, getPriceErrorMessage);
+
   function validateCapacity () {
-    return  capacityOption[RoomsField.value].includes(GuestsField.value);
+    if (roomsField.value === '100' && guestsField.value === '0') {
+      return true;
+    } else if ((roomsField.value === '100') || (guestsField.value === '0')) {
+      return false;
+    } else if (roomsField.value >= guestsField.value) {
+      return true;
+    }
+    return false;
   }
 
   function getCapacityErrorMessage () {
-    return `${RoomsField.options[RoomsField.selectedIndex].text} не подходит для варианта:
-      ${GuestsField.options[GuestsField.selectedIndex].text}`;
+    return ` Внимание! ${roomsField.options[roomsField.selectedIndex].text} не подходит под вариант:
+      ${guestsField.options[guestsField.selectedIndex].text}`;
   }
 
-  pristine.addValidator(GuestsField, validateCapacity, getCapacityErrorMessage);
+  pristine.addValidator(guestsField, validateCapacity, getCapacityErrorMessage);
 
-  return pristine.validate();
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      form.submit();
+    }
+  });
 }
