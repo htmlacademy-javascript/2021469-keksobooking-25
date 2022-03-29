@@ -6,7 +6,7 @@ const buildingInRusLang = {
   'hotel': 'Отель',
 };
 
-function declOfNum (number, textForms) {
+export function declOfNum (number, textForms) {
   number = Math.abs(number) % 1000;
   if (number > 1 && number < 5) {
     return textForms[1];
