@@ -1,15 +1,34 @@
-const form = document.querySelector('.ad-form');
-const roomsField = form.querySelector('[name="rooms"]');
-const guestsField = form.querySelector('[name="capacity"]');
-const priceField = form.querySelector('#price');
-const buildingTypeField = form.querySelector('[name="type"]');
-const timeField = form.querySelector('.ad-form__element--time');
+const offerForm = document.querySelector('.ad-form');
+const roomsField = offerForm.querySelector('[name="rooms"]');
+const guestsField = offerForm.querySelector('[name="capacity"]');
+const priceField = offerForm.querySelector('#price');
+const buildingTypeField = offerForm.querySelector('[name="type"]');
+const timeField = offerForm.querySelector('.ad-form__element--time');
 const checkInField = timeField.querySelector('[name="timein"]');
 const checkOutField = timeField.querySelector('[name="timeout"]');
 
+export function setInactiveСondition (formsCollection) {
+  for (const form of formsCollection) {
+    form.classList.add('ad-form--disabled');
+    const liveFormChildren = form.children;
+    for (const child of liveFormChildren) {
+      child.setAttribute('disabled', 'disabled');
+    }
+  }
+}
+
+export function setActiveСondition (formsCollection) {
+  for (const form of formsCollection) {
+    form.classList.remove('ad-form--disabled');
+    const liveFormChildren = form.children;
+    for (const child of liveFormChildren) {
+      child.removeAttribute ('disabled', 'disabled');
+    }
+  }
+}
 
 export function validateForm () {
-  const pristine = new Pristine(form, {
+  const pristine = new Pristine(offerForm, {
     classTo: 'ad-form__element',
     errorClass: 'ad-form__element--invalid',
     successClass: 'ad-form__element--valid',
@@ -31,7 +50,7 @@ export function validateForm () {
     pristine.validate(priceField);
   }
 
-  form
+  offerForm
     .querySelectorAll('[name="type"]')
     .forEach((item) => item.addEventListener('change', onBuildingTypeChange));
 
@@ -72,11 +91,11 @@ export function validateForm () {
   }
   timeField.addEventListener('change', validateChecking);
 
-  form.addEventListener('submit', (evt) => {
+  offerForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (isValid) {
-      form.submit();
+      offerForm.submit();
     }
   });
 }
