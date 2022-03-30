@@ -7,36 +7,48 @@ const timeField = offerForm.querySelector('.ad-form__element--time');
 const checkInField = timeField.querySelector('[name="timein"]');
 const checkOutField = timeField.querySelector('[name="timeout"]');
 
-export function setInactiveСondition (formsCollection) {
-  for (const form of formsCollection) {
-    form.classList.add('ad-form--disabled');
-    const liveFormChildren = form.children;
-    for (const child of liveFormChildren) {
-      child.setAttribute('disabled', 'disabled');
-    }
+export function setInactiveСondition (form, className) {
+  form.classList.add(`${className}--disabled`);
+  const liveFormChildren = form.querySelectorAll('button, fieldset, keygen, optgroup, option, select, textarea, input');
+  for (const child of liveFormChildren) {
+    child.setAttribute('disabled', 'disabled');
+  }
+  offerForm.removeEventListener('submit', buttonSubmitHandler);
+  timeField.removeEventListener('change', validateChecking);
+}
+
+export function setActiveСondition (form, className) {
+  form.classList.remove(`${className}--disabled`);
+  const liveFormChildren = form.querySelectorAll('button, fieldset, keygen, optgroup, option, select, textarea, input');
+  for (const child of liveFormChildren) {
+    child.removeAttribute ('disabled', 'disabled');
   }
 }
 
-export function setActiveСondition (formsCollection) {
-  for (const form of formsCollection) {
-    form.classList.remove('ad-form--disabled');
-    const liveFormChildren = form.children;
-    for (const child of liveFormChildren) {
-      child.removeAttribute ('disabled', 'disabled');
-    }
+const pristine = new Pristine(offerForm, {
+  classTo: 'ad-form__element',
+  errorClass: 'ad-form__element--invalid',
+  successClass: 'ad-form__element--valid',
+  errorTextParent: 'ad-form__element',
+  errorTextTag: 'p',
+  errorTextClass: 'form__error'
+}, false);
+
+function buttonSubmitHandler (evt) {
+  evt.preventDefault();
+  const isValid = pristine.validate();
+  if (isValid) {
+    offerForm.submit();
   }
 }
-
+function validateChecking(evt) {
+  if (evt.target.matches('select[name="timein"]')) {
+    checkOutField.value = evt.target.value;
+  } else {
+    checkInField.value = evt.target.value;
+  }
+}
 export function validateForm () {
-  const pristine = new Pristine(offerForm, {
-    classTo: 'ad-form__element',
-    errorClass: 'ad-form__element--invalid',
-    successClass: 'ad-form__element--valid',
-    errorTextParent: 'ad-form__element',
-    errorTextTag: 'p',
-    errorTextClass: 'form__error'
-  }, false);
-
   const priceOption = {
     'bungalow': '0',
     'flat': '1000',
@@ -82,20 +94,7 @@ export function validateForm () {
 
   pristine.addValidator(guestsField, validateCapacity, getCapacityErrorMessage);
 
-  function validateChecking(evt) {
-    if (evt.target.matches('select[name="timein"]')) {
-      checkOutField.value = evt.target.value;
-    } else {
-      checkInField.value = evt.target.value;
-    }
-  }
   timeField.addEventListener('change', validateChecking);
 
-  offerForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    const isValid = pristine.validate();
-    if (isValid) {
-      offerForm.submit();
-    }
-  });
+  offerForm.addEventListener('submit', buttonSubmitHandler);
 }
