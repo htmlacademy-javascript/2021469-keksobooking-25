@@ -1,6 +1,6 @@
 import {createElement} from './data.js';
-import {validateForm, deactivateOfferForm, activateOfferForm} from './offer_form.js';
-import {deactivateMapFiltersForm, activateMapFiltersForm} from './map_filters_form.js';
+import {validateForm, deactivateOfferForm, activateOfferForm} from './offer-form.js';
+import {deactivateMapFiltersForm, activateMapFiltersForm} from './map-filters-form.js';
 import {getNewCard} from './popup.js';
 
 deactivateOfferForm();
