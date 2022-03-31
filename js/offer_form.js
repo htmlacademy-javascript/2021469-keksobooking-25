@@ -6,10 +6,10 @@ const buildingTypeField = offerForm.querySelector('[name="type"]');
 const timeField = offerForm.querySelector('.ad-form__element--time');
 const checkInField = timeField.querySelector('[name="timein"]');
 const checkOutField = timeField.querySelector('[name="timeout"]');
+const liveFormChildren = offerForm.querySelectorAll('fieldset');
 
-export function setInactiveСondition (form, className) {
-  form.classList.add(`${className}--disabled`);
-  const liveFormChildren = form.querySelectorAll('button, fieldset, keygen, optgroup, option, select, textarea, input');
+export function deactivateOfferForm () {
+  offerForm.classList.add('ad-form--disabled');
   for (const child of liveFormChildren) {
     child.setAttribute('disabled', 'disabled');
   }
@@ -17,12 +17,13 @@ export function setInactiveСondition (form, className) {
   timeField.removeEventListener('change', validateChecking);
 }
 
-export function setActiveСondition (form, className) {
-  form.classList.remove(`${className}--disabled`);
-  const liveFormChildren = form.querySelectorAll('button, fieldset, keygen, optgroup, option, select, textarea, input');
+export function activateOfferForm () {
+  offerForm.classList.remove('ad-form--disabled');
   for (const child of liveFormChildren) {
     child.removeAttribute ('disabled', 'disabled');
   }
+  offerForm.addEventListener('submit', buttonSubmitHandler);
+  timeField.addEventListener('change', validateChecking);
 }
 
 const pristine = new Pristine(offerForm, {
