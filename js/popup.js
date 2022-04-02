@@ -20,9 +20,9 @@ export function declOfNum (number, textForms) {
 const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
-const card = cardTemplate.cloneNode(true);
 
-export const getNewCard = function(newCard) {
+export const getNewCard = (newCard) => {
+  const card = cardTemplate.cloneNode(true);
   card.querySelector('.popup__title').textContent = newCard.offer.title;
   card.querySelector('.popup__text--address').textContent = newCard.offer.address;
   card.querySelector('.popup__text--price').textContent = `${newCard.offer.price} ₽/ночь`;
@@ -33,28 +33,36 @@ export const getNewCard = function(newCard) {
   card.querySelector('.popup__text--time').textContent = `Заезд после ${newCard.offer.checkin}, выезд до ${newCard.offer.checkout}`;
 
   const featuresContainer = card.querySelector('.popup__features');
-  const  featuresListFragment = document.createDocumentFragment();
-  newCard.offer.features.forEach((feature) => {
-    const necessaryFeature = document.createElement('li');
-    necessaryFeature.classList.add('popup__feature', `popup__feature--${feature}`);
-    necessaryFeature.textContent = feature;
-    featuresListFragment.append(necessaryFeature);
-  });
-  featuresContainer.innerHTML = '';
-  featuresContainer.append(featuresListFragment);
+  if (newCard.offer.features.length !== 0) {
+    const  featuresListFragment = document.createDocumentFragment();
+    newCard.offer.features.forEach((feature) => {
+      const necessaryFeature = document.createElement('li');
+      necessaryFeature.classList.add('popup__feature', `popup__feature--${feature}`);
+      necessaryFeature.textContent = feature;
+      featuresListFragment.append(necessaryFeature);
+    });
+    featuresContainer.innerHTML = '';
+    featuresContainer.append(featuresListFragment);
+  } else {
+    featuresContainer.classList.add('hidden');
+  }
 
   card.querySelector('.popup__description').textContent = newCard.offer.description;
 
   const photosContainer =  card.querySelector('.popup__photos');
-  const  photosListFragment = document.createDocumentFragment();
-  newCard.offer.photos.forEach((photo) => {
-    let necessaryPhoto = photosContainer.querySelector('.popup__photo');
-    necessaryPhoto.src = photo;
-    necessaryPhoto = necessaryPhoto.cloneNode(false);
-    photosListFragment.append(necessaryPhoto);
-  });
-  photosContainer.innerHTML = '';
-  photosContainer.append(photosListFragment);
+  if (newCard.offer.photos.length !== 0) {
+    const  photosListFragment = document.createDocumentFragment();
+    newCard.offer.photos.forEach((photo) => {
+      let necessaryPhoto = photosContainer.querySelector('.popup__photo');
+      necessaryPhoto.src = photo;
+      necessaryPhoto = necessaryPhoto.cloneNode(false);
+      photosListFragment.append(necessaryPhoto);
+    });
+    photosContainer.innerHTML = '';
+    photosContainer.append(photosListFragment);
+  } else {
+    photosContainer.classList.add('hidden');
+  }
 
   card.querySelector('.popup__avatar').src = newCard.author.avatar;
   return card;
