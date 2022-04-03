@@ -4,6 +4,8 @@ import {getNewCard} from './popup.js';
 import {createElement} from './data.js';
 
 const SIMILAR_OFFER_COUNT = 10;
+const CENTER_TOKYO_LAT = 35.68333;
+const CENTER_TOKYO_LNG = 139.73333;
 const offersArray = Array.from({length: SIMILAR_OFFER_COUNT}, createElement);
 
 export function activateMap () {
@@ -38,8 +40,8 @@ export function activateMap () {
 
   const mainMarker = L.marker(
     {
-      lat: 35.683333,
-      lng: 139.733333,
+      lat: 35.68333,
+      lng: 139.73333,
     },
     {
       draggable: true,
@@ -64,14 +66,14 @@ export function activateMap () {
   };
 
   const suiteAdress = document.querySelector('#address');
-  suiteAdress.value = '35.683333, 139.733333';
+  suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
 
   offersArray.forEach((point) => {
     createSimilarMarker(point);
   });
 
   mainMarker.on('moveend', (evt) => {
-    suiteAdress.value = `${evt.target.getLatLng().lat}, ${evt.target.getLatLng().lng}`;
+    suiteAdress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
   });
 }
 

@@ -33,7 +33,7 @@ export const getNewCard = (newCard) => {
   card.querySelector('.popup__text--time').textContent = `Заезд после ${newCard.offer.checkin}, выезд до ${newCard.offer.checkout}`;
 
   const featuresContainer = card.querySelector('.popup__features');
-  if (newCard.offer.features.length !== 0) {
+  if (newCard.offer.features.length) {
     const  featuresListFragment = document.createDocumentFragment();
     newCard.offer.features.forEach((feature) => {
       const necessaryFeature = document.createElement('li');
@@ -50,7 +50,7 @@ export const getNewCard = (newCard) => {
   card.querySelector('.popup__description').textContent = newCard.offer.description;
 
   const photosContainer =  card.querySelector('.popup__photos');
-  if (newCard.offer.photos.length !== 0) {
+  if (newCard.offer.photos.length) {
     const  photosListFragment = document.createDocumentFragment();
     newCard.offer.photos.forEach((photo) => {
       let necessaryPhoto = photosContainer.querySelector('.popup__photo');
