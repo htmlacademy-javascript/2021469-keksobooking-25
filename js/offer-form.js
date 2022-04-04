@@ -7,6 +7,8 @@ const timeField = offerForm.querySelector('.ad-form__element--time');
 const checkInField = timeField.querySelector('[name="timein"]');
 const checkOutField = timeField.querySelector('[name="timeout"]');
 const liveFormChildren = offerForm.querySelectorAll('fieldset');
+const sliderElement = offerForm.querySelector('.ad-form__slider');
+
 
 export function deactivateOfferForm () {
   offerForm.classList.add('ad-form--disabled');
@@ -15,6 +17,7 @@ export function deactivateOfferForm () {
   }
   offerForm.removeEventListener('submit', buttonSubmitHandler);
   timeField.removeEventListener('change', validateChecking);
+  priceField.removeEventListener('keyup', syncSlider);
 }
 
 export function activateOfferForm () {
@@ -24,6 +27,7 @@ export function activateOfferForm () {
   }
   offerForm.addEventListener('submit', buttonSubmitHandler);
   timeField.addEventListener('change', validateChecking);
+  priceField.addEventListener('keyup', syncSlider);
 }
 
 const pristine = new Pristine(offerForm, {
@@ -42,6 +46,7 @@ function buttonSubmitHandler (evt) {
     offerForm.submit();
   }
 }
+
 function validateChecking(evt) {
   if (evt.target.matches('select[name="timein"]')) {
     checkOutField.value = evt.target.value;
@@ -49,6 +54,11 @@ function validateChecking(evt) {
     checkInField.value = evt.target.value;
   }
 }
+
+function syncSlider () {
+  sliderElement.noUiSlider.set(priceField.value);
+}
+
 export function validateForm () {
   const priceOption = {
     'bungalow': '0',
@@ -60,6 +70,7 @@ export function validateForm () {
 
   function onBuildingTypeChange () {
     priceField.placeholder = priceOption[buildingTypeField.value];
+    sliderElement.noUiSlider.set(priceOption[buildingTypeField.value]);
     pristine.validate(priceField);
   }
 
@@ -68,6 +79,7 @@ export function validateForm () {
     .forEach((item) => item.addEventListener('change', onBuildingTypeChange));
 
   function validatePrice (value) {
+    sliderElement.noUiSlider.set(value);
     return parseInt(value, 10) > priceOption[buildingTypeField.value];
   }
 
@@ -76,6 +88,29 @@ export function validateForm () {
   }
 
   pristine.addValidator(priceField, validatePrice, getPriceErrorMessage);
+  noUiSlider.create(sliderElement, {
+    range: {
+      min: 0,
+      max: 100000,
+    },
+    start: 1000,
+    step: 1,
+    connect: 'lower',
+    format: {
+      to: function (value) {
+        return value.toFixed(0);
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    }
+  });
+
+  priceField.addEventListener('keyup', syncSlider);
+
+  sliderElement.noUiSlider.on('slide', () =>{
+    priceField.value = sliderElement.noUiSlider.get();
+  });
 
   function validateCapacity () {
     if (roomsField.value === '100' && guestsField.value === '0') {
