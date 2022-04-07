@@ -1,3 +1,6 @@
+import {sendData} from './network.js';
+import {setCenterMarker} from './map.js';
+
 const offerForm = document.querySelector('.ad-form');
 const roomsField = offerForm.querySelector('[name="rooms"]');
 const guestsField = offerForm.querySelector('[name="capacity"]');
@@ -8,7 +11,17 @@ const checkInField = timeField.querySelector('[name="timein"]');
 const checkOutField = timeField.querySelector('[name="timeout"]');
 const liveFormChildren = offerForm.querySelectorAll('fieldset');
 const sliderElement = offerForm.querySelector('.ad-form__slider');
-
+const submitButton = offerForm.querySelector('.ad-form__submit');
+const resetButton = offerForm.querySelector('.ad-form__reset');
+const mapFiltersForm = document.querySelector('.map__filters');
+const pristine = new Pristine(offerForm, {
+  classTo: 'ad-form__element',
+  errorClass: 'ad-form__element--invalid',
+  successClass: 'ad-form__element--valid',
+  errorTextParent: 'ad-form__element',
+  errorTextTag: 'p',
+  errorTextClass: 'form__error'
+}, false);
 
 export function deactivateOfferForm () {
   offerForm.classList.add('ad-form--disabled');
@@ -30,20 +43,31 @@ export function activateOfferForm () {
   priceField.addEventListener('keyup', syncSlider);
 }
 
-const pristine = new Pristine(offerForm, {
-  classTo: 'ad-form__element',
-  errorClass: 'ad-form__element--invalid',
-  successClass: 'ad-form__element--valid',
-  errorTextParent: 'ad-form__element',
-  errorTextTag: 'p',
-  errorTextClass: 'form__error'
-}, false);
+function blockSubmitButton () {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+}
+
+export function unblockSubmitButton () {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+}
+
+export function resetForms () {
+  offerForm.reset();
+  mapFiltersForm.reset();
+  setCenterMarker();
+  sliderElement.noUiSlider.set(0);
+  priceField.placeholder = '1000';
+}
 
 function buttonSubmitHandler (evt) {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
-    offerForm.submit();
+    blockSubmitButton();
+    const formData = new FormData(evt.target);
+    sendData(formData);
   }
 }
 
@@ -133,4 +157,8 @@ export function validateForm () {
   timeField.addEventListener('change', validateChecking);
 
   offerForm.addEventListener('submit', buttonSubmitHandler);
+  resetButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    resetForms();
+  });
 }

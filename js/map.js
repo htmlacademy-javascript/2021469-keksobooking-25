@@ -1,19 +1,72 @@
 import {activateOfferForm} from './offer-form.js';
 import {activateMapFiltersForm} from './map-filters-form.js';
 import {getNewCard} from './popup.js';
-import {createElement} from './data.js';
 
-const SIMILAR_OFFER_COUNT = 10;
 const CENTER_TOKYO_LAT = 35.68333;
 const CENTER_TOKYO_LNG = 139.73333;
-const offersArray = Array.from({length: SIMILAR_OFFER_COUNT}, createElement);
+const suiteAdress = document.querySelector('#address');
+const map = L.map('map-canvas');
 
-export function activateMap () {
-  const map = L.map('map-canvas')
-    .on('load', () =>{
-      activateOfferForm();
-      activateMapFiltersForm();
-    })
+const mainPinIcon = L.icon({
+  iconUrl: './img/main-pin.svg',
+  iconSize: [52,52],
+  iconAnchor: [26, 52],
+});
+
+const mainMarker = L.marker(
+  {
+    lat: 35.68333,
+    lng: 139.73333,
+  },
+  {
+    draggable: true,
+    icon: mainPinIcon,
+  }
+);
+
+const similarPinIcon = L.icon({
+  iconUrl: './img/pin.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+export function setCenterMarker () {
+  map.setView({
+    lat: CENTER_TOKYO_LAT,
+    lng: CENTER_TOKYO_LNG,
+  }, 13);
+
+  mainMarker.setLatLng(
+    {
+      lat: CENTER_TOKYO_LAT,
+      lng: CENTER_TOKYO_LNG,
+    }
+  );
+  map.closePopup();
+  suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
+}
+
+const createSimilarMarker = (point) => {
+  const {lat, lng} = point.location;
+  const marker = L.marker(
+    {
+      lat,
+      lng,
+    },
+    {
+      icon: similarPinIcon,
+    },
+  );
+  marker
+    .addTo(map)
+    .bindPopup(getNewCard(point));
+};
+
+export function activateMap (elements) {
+  map.on('load', () =>{
+    activateOfferForm();
+    activateMapFiltersForm();
+  })
     .setView({
       lat: 35.683333,
       lng: 139.733333,
@@ -26,54 +79,16 @@ export function activateMap () {
     },
   ).addTo(map);
 
-  const mainPinIcon = L.icon({
-    iconUrl: './img/main-pin.svg',
-    iconSize: [52,52],
-    iconAnchor: [26, 52],
-  });
+  mainMarker.addTo(map);
 
-  const similarPinIcon = L.icon({
-    iconUrl: './img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
-  const mainMarker = L.marker(
-    {
-      lat: 35.68333,
-      lng: 139.73333,
-    },
-    {
-      draggable: true,
-      icon: mainPinIcon,
-    }
-  ).addTo(map);
-
-  const createSimilarMarker = (point) => {
-    const {lat, lng} = point.location;
-    const marker = L.marker(
-      {
-        lat,
-        lng,
-      },
-      {
-        icon: similarPinIcon,
-      },
-    );
-    marker
-      .addTo(map)
-      .bindPopup(getNewCard(point));
-  };
-
-  const suiteAdress = document.querySelector('#address');
   suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
-
-  offersArray.forEach((point) => {
-    createSimilarMarker(point);
-  });
 
   mainMarker.on('moveend', (evt) => {
     suiteAdress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
+  });
+
+  elements.forEach((elem) => {
+    createSimilarMarker(elem);
   });
 }
 
