@@ -6,7 +6,7 @@ const buildingInRusLang = {
   'hotel': 'Отель',
 };
 
-export function declOfNum (number, textForms) {
+export const declOfNum = (number, textForms) => {
   number = Math.abs(number) % 1000;
   if (number > 1 && number < 5) {
     return textForms[1];
@@ -15,7 +15,7 @@ export function declOfNum (number, textForms) {
     return textForms[0];
   }
   return '';
-}
+};
 
 const cardTemplate = document.querySelector('#card')
   .content
@@ -33,7 +33,7 @@ export const getNewCard = (newCard) => {
   card.querySelector('.popup__text--time').textContent = `Заезд после ${newCard.offer.checkin}, выезд до ${newCard.offer.checkout}`;
 
   const featuresContainer = card.querySelector('.popup__features');
-  if ('features' in newCard.offer) {
+  if (newCard.offer.features) {
     const  featuresListFragment = document.createDocumentFragment();
     newCard.offer.features.forEach((feature) => {
       const necessaryFeature = document.createElement('li');
@@ -50,7 +50,7 @@ export const getNewCard = (newCard) => {
   card.querySelector('.popup__description').textContent = newCard.offer.description;
 
   const photosContainer =  card.querySelector('.popup__photos');
-  if ('photos' in newCard.offer) {
+  if (newCard.offer.photos) {
     const  photosListFragment = document.createDocumentFragment();
     newCard.offer.photos.forEach((photo) => {
       let necessaryPhoto = photosContainer.querySelector('.popup__photo');

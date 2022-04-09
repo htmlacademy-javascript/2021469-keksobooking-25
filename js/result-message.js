@@ -10,35 +10,35 @@ const errorTemplate = document.querySelector('#error')
 const errorMessage = errorTemplate.cloneNode(true);
 const buttonSubmitError = errorMessage.querySelector('.error__button');
 
-function removeMessage (evt) {
+const hideMessage = (evt) => {
   if (evt.type === 'click' || evt.keyCode === 27) {
     body.removeChild(body.lastChild);
   }
-  body.removeEventListener('click', removeMessage);
-  body.removeEventListener('keydown', removeMessage);
-}
+  body.removeEventListener('click', hideMessage);
+  body.removeEventListener('keydown', hideMessage);
+};
 
-export function getSuccessMessage () {
+export const showSuccessMessage = () => {
   body.appendChild(successMessage);
-  body.addEventListener('click', removeMessage);
-  body.addEventListener('keydown', removeMessage);
-}
+  body.addEventListener('click', hideMessage);
+  body.addEventListener('keydown', hideMessage);
+};
 
-export function getErrorMessage () {
-  buttonSubmitError.addEventListener('click', removeMessage);
+export const showErrorMessage = () => {
+  buttonSubmitError.addEventListener('click', hideMessage);
   body.appendChild(errorMessage);
-  body.addEventListener('click', removeMessage);
-  body.addEventListener('keydown', removeMessage);
-}
+  body.addEventListener('click', hideMessage);
+  body.addEventListener('keydown', hideMessage);
+};
 
 const errorDownloadMessage = errorTemplate.cloneNode(true);
 const textDownloadError = errorDownloadMessage.querySelector('p');
 const buttonClickDownloadError = errorDownloadMessage.querySelector('button');
-export function getErrorDownloadMessage () {
+export const showErrorDownloadMessage = () => {
   textDownloadError.textContent = 'Не удалось загрузить объявления других пользователей';
   buttonClickDownloadError.textContent = 'Очень жаль...';
-  buttonClickDownloadError.addEventListener('click', removeMessage);
+  buttonClickDownloadError.addEventListener('click', hideMessage);
   body.appendChild(errorDownloadMessage);
-  body.addEventListener('click', removeMessage);
-  body.addEventListener('keydown', removeMessage);
-}
+  body.addEventListener('click', hideMessage);
+  body.addEventListener('keydown', hideMessage);
+};

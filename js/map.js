@@ -30,7 +30,7 @@ const similarPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-export function setCenterMarker () {
+export const setCenterMarker = () => {
   map.setView({
     lat: CENTER_TOKYO_LAT,
     lng: CENTER_TOKYO_LNG,
@@ -44,7 +44,7 @@ export function setCenterMarker () {
   );
   map.closePopup();
   suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
-}
+};
 
 const createSimilarMarker = (point) => {
   const {lat, lng} = point.location;
@@ -62,7 +62,7 @@ const createSimilarMarker = (point) => {
     .bindPopup(getNewCard(point));
 };
 
-export function activateMap (elements) {
+export const activateMap = (elements) => {
   map.on('load', () =>{
     activateOfferForm();
     activateMapFiltersForm();
@@ -90,5 +90,5 @@ export function activateMap (elements) {
   elements.forEach((elem) => {
     createSimilarMarker(elem);
   });
-}
+};
 

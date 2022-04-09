@@ -1,8 +1,8 @@
 import {unblockSubmitButton, resetForms} from './offer-form.js';
-import {getErrorMessage, getSuccessMessage, getErrorDownloadMessage} from './result-message.js';
+import {showErrorMessage, showSuccessMessage, showErrorDownloadMessage} from './result-message.js';
 import {activateMap} from './map.js';
 
-export function getData () {
+export const getData = () => {
   fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
@@ -15,12 +15,12 @@ export function getData () {
       activateMap(cards);
     })
     .catch(() => {
-      getErrorDownloadMessage();
+      showErrorDownloadMessage();
       activateMap([]);
     });
-}
+};
 
-export function sendData (body) {
+export const sendData = (body) => {
   fetch('https://25.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
@@ -30,14 +30,14 @@ export function sendData (body) {
     .then((response) => {
       if (response.ok) {
         unblockSubmitButton();
-        getSuccessMessage();
+        showSuccessMessage();
         resetForms();
       } else {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
     })
     .catch(() => {
-      getErrorMessage();
+      showErrorMessage();
       unblockSubmitButton();
     });
-}
+};
