@@ -9,6 +9,8 @@ const guestsField = mapFiltersForm.querySelector('#housing-guests');
 const filterFields = mapFiltersForm.querySelectorAll('select, input');
 const inputFields = mapFiltersForm.querySelectorAll('input');
 
+const SIMILAR_OFFER_COUNT = 10;
+
 export const deactivateMapFiltersForm = () => {
   mapFiltersForm.classList.add('map__filters--disabled');
   for (const child of formChildren) {
@@ -91,7 +93,7 @@ export const beginToFilterOffers = (offers) => {
     })
     .then((cards) => {
       similarMarkerGroup.clearLayers();
-      cards.slice(0,10)
+      cards.slice(0, SIMILAR_OFFER_COUNT)
         .forEach((card) => {
           createSimilarMarker(card);
         });
