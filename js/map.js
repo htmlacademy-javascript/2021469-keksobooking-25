@@ -1,6 +1,7 @@
 import {activateOfferForm} from './offer-form.js';
 import {activateMapFiltersForm} from './map-filters-form.js';
 import {getNewCard} from './popup.js';
+import { getData } from './network.js';
 
 const CENTER_TOKYO_LAT = 35.68333;
 const CENTER_TOKYO_LNG = 139.73333;
@@ -30,7 +31,34 @@ const similarPinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
+export const similarMarkerGroup = L.layerGroup().addTo(map);
+
+export const createSimilarMarker = (point) => {
+  const {lat, lng} = point.location;
+  const marker = L.marker(
+    {
+      lat,
+      lng,
+    },
+    {
+      icon: similarPinIcon,
+    },
+  );
+  marker
+    .addTo(similarMarkerGroup)
+    .bindPopup(getNewCard(point));
+};
+
 export const setCenterMarker = () => {
+  similarMarkerGroup.clearLayers();
+  getData((offers) => {
+    offers
+      .slice(0,10)
+      .forEach((card) => {
+        createSimilarMarker(card);
+      });
+  });
+
   map.setView({
     lat: CENTER_TOKYO_LAT,
     lng: CENTER_TOKYO_LNG,
@@ -46,23 +74,7 @@ export const setCenterMarker = () => {
   suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
 };
 
-const createSimilarMarker = (point) => {
-  const {lat, lng} = point.location;
-  const marker = L.marker(
-    {
-      lat,
-      lng,
-    },
-    {
-      icon: similarPinIcon,
-    },
-  );
-  marker
-    .addTo(map)
-    .bindPopup(getNewCard(point));
-};
-
-export const activateMap = (elements) => {
+export const activateMap = (offers) => {
   map.on('load', () =>{
     activateOfferForm();
     activateMapFiltersForm();
@@ -87,8 +99,9 @@ export const activateMap = (elements) => {
     suiteAdress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
   });
 
-  elements.forEach((elem) => {
-    createSimilarMarker(elem);
+  const offersArray = offers.slice(0, 10);
+  offersArray.forEach((offer) => {
+    createSimilarMarker(offer);
   });
 };
 

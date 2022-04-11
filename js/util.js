@@ -40,3 +40,11 @@ export const getNonRepeatingNumber = (array, min, max) => {
     return getNonRepeatingNumber(array, min, max);
   }
 };
+
+export const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};

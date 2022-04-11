@@ -75,6 +75,7 @@ export const resetForms = () => {
   offerForm.reset();
   mapFiltersForm.reset();
   setCenterMarker();
+  // typeFieldFilter.click();
   sliderElement.noUiSlider.set(0);
   priceField.placeholder = '1000';
 };
