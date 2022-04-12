@@ -10,6 +10,8 @@ const filterFields = mapFiltersForm.querySelectorAll('select, input');
 const inputFields = mapFiltersForm.querySelectorAll('input');
 
 const SIMILAR_OFFER_COUNT = 10;
+const LOW_PRICE_FOR_NIGHT = 10000;
+const HIGH_PRICE_FOR_NIGHT = 50000;
 
 export const deactivateMapFiltersForm = () => {
   mapFiltersForm.classList.add('map__filters--disabled');
@@ -26,76 +28,78 @@ export const activateMapFiltersForm = () => {
 };
 export const setfilterFieldsClick = (callback) => {
   for (const field of filterFields) {
-    field.addEventListener('click', () => {
+    field.addEventListener('change', () => {
       callback();
     });
   }
 };
 
-function f (price)  {
-  if (10000 <= price && price <= 50000) {
+const priceOptions =  (price) => {
+  if (LOW_PRICE_FOR_NIGHT <= price && price <= HIGH_PRICE_FOR_NIGHT) {
     return 'middle';
   }
-  if (price < 10000) {
+  if (price < LOW_PRICE_FOR_NIGHT) {
     return 'low';
   }
-  if (price > 50000) {
+  if (price > HIGH_PRICE_FOR_NIGHT) {
     return 'high';
   }
   return 'any';
-}
+};
+
+const isFilteringPassed = (elem) => {
+  let activeSelectCounter = 0;
+  let satisfyingFilterCounter = 0;
+  if (typeField.value !== 'any') {
+    activeSelectCounter++;
+    if(elem.offer.type === typeField.value) {
+      satisfyingFilterCounter++;
+    }
+  }
+  if (priceField.value !== 'any') {
+    activeSelectCounter++;
+    if(priceOptions(elem.offer.price) === priceField.value) {
+      satisfyingFilterCounter++;
+    }
+  }
+  if (roomsField.value !== 'any') {
+    activeSelectCounter++;
+    if(elem.offer.rooms === parseInt(roomsField.value, 10)) {
+      satisfyingFilterCounter++;
+    }
+  }
+  if (guestsField.value !== 'any') {
+    activeSelectCounter++;
+    if(elem.offer.guests === parseInt(guestsField.value, 10)) {
+      satisfyingFilterCounter++;
+    }
+  }
+  for (const input of inputFields) {
+    if (input.checked) {
+      activeSelectCounter++;
+      if(elem.offer.features && elem.offer.features.includes(input.value)) {
+        satisfyingFilterCounter++;
+      }
+    }
+  }
+  if (activeSelectCounter === satisfyingFilterCounter) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const beginToFilterOffers = (offers) => {
-  const array = offers.slice();
-  const myPromise = new Promise((resolve) => {
-    resolve(array);
-  });
-  myPromise.then((cards) => {
-    if (typeField.value !== 'any') {
-      const filteredOffers = cards.filter((elem) => elem.offer.type === typeField.value);
-      return filteredOffers;
-    } else {
-      return cards;
+  const filteredOffers = [];
+  let i = 0;
+  while (filteredOffers.length < SIMILAR_OFFER_COUNT && i < offers.length) {
+    if(isFilteringPassed(offers[i])) {
+      filteredOffers.push(offers[i]);
     }
-  })
-    .then((cards) => {
-      if (priceField.value !== 'any') {
-        const filteredOffers = cards.filter((elem) => f(elem.offer.price) === priceField.value);
-        return filteredOffers;
-      } else {
-        return cards;
-      }
-    })
-    .then((cards) => {
-      if (roomsField.value !== 'any') {
-        const filteredOffers = cards.filter((elem) => elem.offer.rooms === parseInt(roomsField.value, 10));
-        return filteredOffers;
-      } else {
-        return cards;
-      }
-    })
-    .then((cards) => {
-      if (guestsField.value !== 'any') {
-        const filteredOffers = cards.filter((elem) => elem.offer.guests === parseInt(guestsField.value, 10));
-        return filteredOffers;
-      } else {
-        return cards;
-      }
-    })
-    .then((cards) => {
-      let filteredOffers = cards.slice();
-      for (const input of inputFields) {
-        if (input.checked) {
-          filteredOffers = filteredOffers.filter((elem) => elem.offer.features && elem.offer.features.includes(input.value));
-        }
-      }
-      return filteredOffers;
-    })
-    .then((cards) => {
-      similarMarkerGroup.clearLayers();
-      cards.slice(0, SIMILAR_OFFER_COUNT)
-        .forEach((card) => {
-          createSimilarMarker(card);
-        });
-    });
+    i++;
+  }
+  similarMarkerGroup.clearLayers();
+  filteredOffers.forEach((card) => {
+    createSimilarMarker(card);
+  });
 };
