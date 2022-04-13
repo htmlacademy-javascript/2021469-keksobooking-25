@@ -1,22 +1,24 @@
 import {unblockSubmitButton, resetForms} from './offer-form.js';
 import {showErrorMessage, showSuccessMessage, showErrorDownloadMessage} from './result-message.js';
 import {activateMap} from './map.js';
+import {deactivateMapFiltersForm,} from './map-filters-form.js';
 
-export const getData = () => {
+export const getData = (onSuccess) => {
   fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
-        return response.json();
+        return  response.json();
       } else {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
     })
-    .then((cards) => {
-      activateMap(cards);
+    .then((offers) => {
+      onSuccess(offers);
     })
     .catch(() => {
       showErrorDownloadMessage();
       activateMap([]);
+      deactivateMapFiltersForm();
     });
 };
 
