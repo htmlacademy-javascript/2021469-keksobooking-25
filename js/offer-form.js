@@ -99,6 +99,8 @@ export const resetForms = () => {
   setCenterMarker();
   sliderElement.noUiSlider.set(0);
   priceField.placeholder = '1000';
+  buildingPhotoPreview.removeChild(buildingPhotoPreview.firstChild);
+  avatarPreview.firstChild.src = 'img/muffin-grey.svg';
 };
 
 function syncSlider () {
