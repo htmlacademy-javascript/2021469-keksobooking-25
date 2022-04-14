@@ -34,7 +34,7 @@ export const setfilterFieldsClick = (callback) => {
   }
 };
 
-const priceOptions =  (price) => {
+const getPriceOptions =  (price) => {
   if (LOW_PRICE_FOR_NIGHT <= price && price <= HIGH_PRICE_FOR_NIGHT) {
     return 'middle';
   }
@@ -48,45 +48,26 @@ const priceOptions =  (price) => {
 };
 
 const isFilteringPassed = (elem) => {
-  let activeSelectCounter = 0;
-  let satisfyingFilterCounter = 0;
-  if (typeField.value !== 'any') {
-    activeSelectCounter++;
-    if(elem.offer.type === typeField.value) {
-      satisfyingFilterCounter++;
-    }
+  if(typeField.value !== 'any' && elem.offer.type !== typeField.value) {
+    return false;
   }
-  if (priceField.value !== 'any') {
-    activeSelectCounter++;
-    if(priceOptions(elem.offer.price) === priceField.value) {
-      satisfyingFilterCounter++;
-    }
+  if(priceField.value !== 'any' && getPriceOptions(elem.offer.price) !== priceField.value) {
+    return false;
   }
-  if (roomsField.value !== 'any') {
-    activeSelectCounter++;
-    if(elem.offer.rooms === parseInt(roomsField.value, 10)) {
-      satisfyingFilterCounter++;
-    }
+  if(roomsField.value !== 'any' && elem.offer.rooms !== parseInt(roomsField.value, 10)) {
+    return false;
   }
-  if (guestsField.value !== 'any') {
-    activeSelectCounter++;
-    if(elem.offer.guests === parseInt(guestsField.value, 10)) {
-      satisfyingFilterCounter++;
-    }
+  if(guestsField.value !== 'any' && elem.offer.guests !== parseInt(guestsField.value, 10)) {
+    return false;
   }
   for (const input of inputFields) {
     if (input.checked) {
-      activeSelectCounter++;
-      if(elem.offer.features && elem.offer.features.includes(input.value)) {
-        satisfyingFilterCounter++;
+      if(!elem.offer.features || !elem.offer.features.includes(input.value)) {
+        return false;
       }
     }
   }
-  if (activeSelectCounter === satisfyingFilterCounter) {
-    return true;
-  } else {
-    return false;
-  }
+  return true;
 };
 
 export const beginToFilterOffers = (offers) => {

@@ -14,6 +14,13 @@ const sliderElement = offerForm.querySelector('.ad-form__slider');
 const submitButton = offerForm.querySelector('.ad-form__submit');
 const resetButton = offerForm.querySelector('.ad-form__reset');
 const mapFiltersForm = document.querySelector('.map__filters');
+const buildingPhotoChooser = offerForm.querySelector('.ad-form__upload input[type="file"]');
+const buildingPhotoPreview = offerForm. querySelector('.ad-form__photo');
+const avatarChooser = offerForm.querySelector('.ad-form__field input[type="file"]');
+const avatarPreview = offerForm. querySelector('.ad-form-header__preview');
+
+const PHOTO_FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element--invalid',
@@ -35,6 +42,21 @@ const buttonSubmitHandler = (evt) => {
     blockSubmitButton();
     const formData = new FormData(evt.target);
     sendData(formData);
+  }
+};
+
+const addPhotos = (fileChooser, preview) => {
+  const file = fileChooser.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = PHOTO_FILE_TYPES.some((type) => fileName.endsWith(type));
+  if (matches) {
+    if (preview.firstChild) {
+      preview.firstChild.src = URL.createObjectURL(file);
+    } else {
+      const photo = document.createElement('img');
+      photo.src = URL.createObjectURL(file);
+      preview.appendChild(photo);
+    }
   }
 };
 
@@ -151,6 +173,8 @@ export const validateForm = () => {
   pristine.addValidator(guestsField, validateCapacity, getCapacityErrorMessage);
 
   timeField.addEventListener('change', validateChecking);
+  buildingPhotoChooser.addEventListener('change', () => addPhotos(buildingPhotoChooser, buildingPhotoPreview));
+  avatarChooser.addEventListener('change', () => addPhotos(avatarChooser, avatarPreview));
 
   offerForm.addEventListener('submit', buttonSubmitHandler);
   resetButton.addEventListener('click', (evt) => {
