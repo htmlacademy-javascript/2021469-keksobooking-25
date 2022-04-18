@@ -5,6 +5,9 @@ const buildingInRusLang = {
   'palace': 'Дворец',
   'hotel': 'Отель',
 };
+const cardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.popup');
 
 export const declOfNum = (number, textForms) => {
   number = Math.abs(number) % 1000;
@@ -16,10 +19,6 @@ export const declOfNum = (number, textForms) => {
   }
   return '';
 };
-
-const cardTemplate = document.querySelector('#card')
-  .content
-  .querySelector('.popup');
 
 export const getNewCard = (newCard) => {
   const card = cardTemplate.cloneNode(true);

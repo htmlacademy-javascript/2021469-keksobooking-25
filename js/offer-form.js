@@ -21,6 +21,14 @@ const avatarPreview = offerForm. querySelector('.ad-form-header__preview');
 
 const PHOTO_FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
+const priceOption = {
+  'bungalow': '0',
+  'flat': '1000',
+  'hotel': '3000',
+  'house': '5000',
+  'palace': '10000'
+};
+
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element--invalid',
@@ -71,7 +79,7 @@ const validateChecking = (evt) => {
 export const deactivateOfferForm = () => {
   offerForm.classList.add('ad-form--disabled');
   for (const child of liveFormChildren) {
-    child.setAttribute('disabled', 'disabled');
+    child.setAttribute('disabled', true);
   }
   offerForm.removeEventListener('submit', buttonSubmitHandler);
   timeField.removeEventListener('change', validateChecking);
@@ -81,7 +89,7 @@ export const deactivateOfferForm = () => {
 export const activateOfferForm = () => {
   offerForm.classList.remove('ad-form--disabled');
   for (const child of liveFormChildren) {
-    child.removeAttribute ('disabled', 'disabled');
+    child.removeAttribute('disabled');
   }
   offerForm.addEventListener('submit', buttonSubmitHandler);
   timeField.addEventListener('change', validateChecking);
@@ -108,13 +116,6 @@ function syncSlider () {
 }
 
 export const validateForm = () => {
-  const priceOption = {
-    'bungalow': '0',
-    'flat': '1000',
-    'hotel': '3000',
-    'house': '5000',
-    'palace': '10000'
-  };
 
   const onBuildingTypeChange = () => {
     priceField.placeholder = priceOption[buildingTypeField.value];

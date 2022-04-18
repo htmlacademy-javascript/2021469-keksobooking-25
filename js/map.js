@@ -5,19 +5,28 @@ import { getData } from './network.js';
 
 const CENTER_TOKYO_LAT = 35.68333;
 const CENTER_TOKYO_LNG = 139.73333;
-const suiteAdress = document.querySelector('#address');
+const SIMILAR_OFFER_COUNT = 10;
+const MAP_SCALE = 13;
+const MAIN_ICON_WIDTH = 52;
+const MAIN_ICON_HIGTH = 52;
+const MAIN_ANCHOR_WIDTH = 26;
+const SIMILAR_ICON_WIDTH = 40;
+const SIMILAR_ICON_HIGTH = 40;
+const SIMILAR_ANCHOR_WIDTH = 20;
+const adress = document.querySelector('#address');
 const map = L.map('map-canvas');
+export const similarMarkerGroup = L.layerGroup().addTo(map);
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: [52,52],
-  iconAnchor: [26, 52],
+  iconSize: [MAIN_ICON_WIDTH, MAIN_ICON_HIGTH],
+  iconAnchor: [MAIN_ANCHOR_WIDTH, MAIN_ICON_HIGTH],
 });
 
 const mainMarker = L.marker(
   {
-    lat: 35.68333,
-    lng: 139.73333,
+    lat: CENTER_TOKYO_LAT,
+    lng: CENTER_TOKYO_LNG,
   },
   {
     draggable: true,
@@ -27,11 +36,9 @@ const mainMarker = L.marker(
 
 const similarPinIcon = L.icon({
   iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [SIMILAR_ICON_WIDTH, SIMILAR_ICON_HIGTH],
+  iconAnchor: [SIMILAR_ANCHOR_WIDTH, SIMILAR_ICON_HIGTH],
 });
-
-export const similarMarkerGroup = L.layerGroup().addTo(map);
 
 export const createSimilarMarker = (point) => {
   const {lat, lng} = point.location;
@@ -53,7 +60,7 @@ export const setCenterMarker = () => {
   similarMarkerGroup.clearLayers();
   getData((offers) => {
     offers
-      .slice(0,10)
+      .slice(0, SIMILAR_OFFER_COUNT)
       .forEach((card) => {
         createSimilarMarker(card);
       });
@@ -62,7 +69,7 @@ export const setCenterMarker = () => {
   map.setView({
     lat: CENTER_TOKYO_LAT,
     lng: CENTER_TOKYO_LNG,
-  }, 13);
+  }, MAP_SCALE);
 
   mainMarker.setLatLng(
     {
@@ -71,7 +78,7 @@ export const setCenterMarker = () => {
     }
   );
   map.closePopup();
-  suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
+  adress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
 };
 
 export const activateMap = (offers) => {
@@ -80,9 +87,9 @@ export const activateMap = (offers) => {
     activateMapFiltersForm();
   })
     .setView({
-      lat: 35.683333,
-      lng: 139.733333,
-    }, 13);
+      lat: CENTER_TOKYO_LAT,
+      lng: CENTER_TOKYO_LNG,
+    }, MAP_SCALE);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -93,13 +100,13 @@ export const activateMap = (offers) => {
 
   mainMarker.addTo(map);
 
-  suiteAdress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
+  adress.value = `${CENTER_TOKYO_LAT}, ${CENTER_TOKYO_LNG}`;
 
   mainMarker.on('moveend', (evt) => {
-    suiteAdress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
+    adress.value = `${(evt.target.getLatLng().lat).toFixed(5)}, ${(evt.target.getLatLng().lng).toFixed(5)}`;
   });
 
-  const offersArray = offers.slice(0, 10);
+  const offersArray = offers.slice(0, SIMILAR_OFFER_COUNT);
   offersArray.forEach((offer) => {
     createSimilarMarker(offer);
   });

@@ -16,17 +16,17 @@ const HIGH_PRICE_FOR_NIGHT = 50000;
 export const deactivateMapFiltersForm = () => {
   mapFiltersForm.classList.add('map__filters--disabled');
   for (const child of formChildren) {
-    child.setAttribute('disabled', 'disabled');
+    child.setAttribute('disabled', true);
   }
 };
 
 export const activateMapFiltersForm = () => {
   mapFiltersForm.classList.remove('map__filters--disabled');
   for (const child of formChildren) {
-    child.removeAttribute ('disabled', 'disabled');
+    child.removeAttribute ('disabled');
   }
 };
-export const setfilterFieldsClick = (callback) => {
+export const setFilterFieldsClick = (callback) => {
   for (const field of filterFields) {
     field.addEventListener('change', () => {
       callback();

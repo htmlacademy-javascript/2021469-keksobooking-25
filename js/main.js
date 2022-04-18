@@ -1,6 +1,6 @@
 import {validateForm, deactivateOfferForm} from './offer-form.js';
 import {getData} from './network.js';
-import {deactivateMapFiltersForm, beginToFilterOffers, setfilterFieldsClick} from './map-filters-form.js';
+import {deactivateMapFiltersForm, beginToFilterOffers, setFilterFieldsClick} from './map-filters-form.js';
 import {debounce} from './util.js';
 import {activateMap} from './map.js';
 
@@ -11,7 +11,7 @@ deactivateMapFiltersForm();
 
 getData((offers) => {
   activateMap(offers);
-  setfilterFieldsClick(debounce(
+  setFilterFieldsClick(debounce(
     () => beginToFilterOffers(offers),
     RERENDER_DELAY));
 });
