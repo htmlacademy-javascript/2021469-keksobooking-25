@@ -1,3 +1,4 @@
+const ESC_KEY_CODE = 27;
 const body = document.querySelector('body');
 const successTemplate = document.querySelector('#success')
   .content
@@ -7,11 +8,15 @@ const successMessage = successTemplate.cloneNode(true);
 const errorTemplate = document.querySelector('#error')
   .content
   .querySelector('.error');
+
 const errorMessage = errorTemplate.cloneNode(true);
 const buttonSubmitError = errorMessage.querySelector('.error__button');
+const errorDownloadMessage = errorTemplate.cloneNode(true);
+const textDownloadError = errorDownloadMessage.querySelector('p');
+const buttonClickDownloadError = errorDownloadMessage.querySelector('button');
 
 const hideMessage = (evt) => {
-  if (evt.type === 'click' || evt.keyCode === 27) {
+  if (evt.type === 'click' || evt.keyCode === ESC_KEY_CODE) {
     body.removeChild(body.lastChild);
   }
   body.removeEventListener('click', hideMessage);
@@ -31,9 +36,6 @@ export const showErrorMessage = () => {
   body.addEventListener('keydown', hideMessage);
 };
 
-const errorDownloadMessage = errorTemplate.cloneNode(true);
-const textDownloadError = errorDownloadMessage.querySelector('p');
-const buttonClickDownloadError = errorDownloadMessage.querySelector('button');
 export const showErrorDownloadMessage = () => {
   textDownloadError.textContent = 'Не удалось загрузить объявления других пользователей';
   buttonClickDownloadError.textContent = 'Очень жаль...';
